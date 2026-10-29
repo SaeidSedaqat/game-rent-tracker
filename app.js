@@ -243,7 +243,9 @@ function favStatusKey(fav, game) {
 
 // ---------- rendering ----------
 
-const $ = sel => document.querySelector(sel);
+// A missing element (e.g. a browser still showing an older cached page) gets a detached stand-in,
+// so one absent button or menu can't stop the rest of the script.
+const $ = sel => document.querySelector(sel) || document.createElement('div');
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 function initials(name) {
