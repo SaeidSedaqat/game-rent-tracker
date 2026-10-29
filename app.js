@@ -272,7 +272,9 @@ function render() {
     if (!g) return { fav, missing: true, rank: 2e9 };
     const rows = CONSOLES.filter(c => fav.consoles.includes(c.key)).map(c => ({ c, a: availability(g, c) }));
     return { fav, g, rows, text: favStatusKey(fav, g), rank: rows.length ? Math.min(...rows.map(r => rank(r.a))) : 1.5e9 };
-  }).sort((a, b) => a.rank - b.rank);
+  });
+  sortFavorites(items);
+  $('#sortFav').value = state.sortFav || 'soon';
 
   // Flag favorites whose status changed since the user last saw them.
   const changed = [];
@@ -288,6 +290,47 @@ function render() {
   $('#favEmpty').hidden = items.length > 0;
   $('#favList').innerHTML = items.map(it => it.missing ? missingCard(it.fav) : gameCard(it)).join('');
   hydrateImages();
+}
+
+// ---------- sorting ----------
+
+const priceNum = text => parseInt(String(text).replace(/[^\d]/g, ''), 10) || Infinity;
+const levelNum = g => parseInt(String(g.level).replace(/[^\d]/g, ''), 10) || 99;
+
+// Cheapest price among the given account types (all types when `keys` is omitted, as in the picker).
+// A favorite with no types ticked has no price and sorts last.
+function minPrice(g, keys) {
+  const cs = CONSOLES.filter(c => !keys || keys.includes(c.key));
+  return Math.min(...cs.map(c => priceNum(g.prices[c.priceKey])));
+}
+
+// Shared comparisons for both lists; price sorts put games without a price last either way.
+function compareGames(mode, a, b, keysA, keysB) {
+  const byName = a.name.localeCompare(b.name);
+  switch (mode) {
+    case 'name': return byName;
+    case 'priceAsc': return minPrice(a, keysA) - minPrice(b, keysB) || byName;
+    case 'priceDesc': {
+      const pa = minPrice(a, keysA), pb = minPrice(b, keysB);
+      if (pa === Infinity || pb === Infinity) return (pa === Infinity) - (pb === Infinity) || byName;
+      return pb - pa || byName;
+    }
+    case 'rentAsc': return (a.rentDays || 999) - (b.rentDays || 999) || byName;
+    case 'rentDesc': return (b.rentDays || 0) - (a.rentDays || 0) || byName;
+    case 'level': return levelNum(a) - levelNum(b) || byName;
+    default: return 0;
+  }
+}
+
+function sortFavorites(items) {
+  const mode = state.sortFav || 'soon';
+  const order = new Map(state.favorites.map((f, i) => [f.name, i]));
+  items.sort((a, b) => {
+    if (a.missing || b.missing) return a.missing - b.missing; // games no longer in the sheet go last
+    if (mode === 'soon') return a.rank - b.rank;
+    if (mode === 'added') return order.get(b.fav.name) - order.get(a.fav.name);
+    return compareGames(mode, a.g, b.g, a.fav.consoles, b.fav.consoles) || a.rank - b.rank;
+  });
 }
 
 function missingCard(fav) {
@@ -448,6 +491,9 @@ function renderPicker() {
   const list = games.filter(g =>
     (pickLevel === 'All' || (pickLevel === 'New' ? newGames.has(g.name) : g.level === pickLevel)) &&
     (!q || g.name.toLowerCase().includes(q)));
+  const sortMode = state.sortPick || 'sheet';
+  $('#sortPick').value = sortMode;
+  if (sortMode !== 'sheet') list.sort((a, b) => compareGames(sortMode, a, b));
 
   $('#pickList').innerHTML = list.length ? list.map(pickItem).join('') : '<p class="muted center">No games match.</p>';
   $('#pickCount').textContent = `${pickDraft.size} selected`;
@@ -550,6 +596,9 @@ $('#pickList').addEventListener('change', e => {
 });
 
 $('#search').addEventListener('input', renderPicker);
+
+$('#sortFav').addEventListener('change', e => { state.sortFav = e.target.value; saveState(); render(); });
+$('#sortPick').addEventListener('change', e => { state.sortPick = e.target.value; saveState(); renderPicker(); });
 
 $('#btnPickDone').onclick = () => {
   const kept = state.favorites.filter(f => pickDraft.has(f.name)).map(f => f.name);

@@ -23,8 +23,19 @@
     <!-- Favorites dashboard -->
     <section id="dashboard" hidden>
       <div class="dash-head">
-        <h2>My games</h2>
-        <span class="muted" id="favCount"></span>
+        <h2>My games <span class="muted count" id="favCount"></span></h2>
+        <label class="sort">Sort
+          <select id="sortFav">
+            <option value="soon">Free soonest</option>
+            <option value="name">Name (A–Z)</option>
+            <option value="priceAsc">Price: low to high</option>
+            <option value="priceDesc">Price: high to low</option>
+            <option value="rentAsc">Rent time: shortest</option>
+            <option value="rentDesc">Rent time: longest</option>
+            <option value="level">Level</option>
+            <option value="added">Recently added</option>
+          </select>
+        </label>
       </div>
       <div id="favList" class="fav-list"></div>
       <div class="card empty" id="favEmpty" hidden>
@@ -66,7 +77,19 @@
         <button class="x" data-close aria-label="Close">✕</button>
       </div>
       <input type="search" id="search" placeholder="Search games…" autocomplete="off">
-      <div class="chips" id="levelChips"></div>
+      <div class="pick-tools">
+        <div class="chips" id="levelChips"></div>
+        <label class="sort">Sort
+          <select id="sortPick">
+            <option value="sheet">Sheet order</option>
+            <option value="name">Name (A–Z)</option>
+            <option value="priceAsc">Price: low to high</option>
+            <option value="priceDesc">Price: high to low</option>
+            <option value="rentAsc">Rent time: shortest</option>
+            <option value="rentDesc">Rent time: longest</option>
+          </select>
+        </label>
+      </div>
       <div class="pick-list" id="pickList"></div>
       <div class="dlg-foot">
         <span class="muted" id="pickCount"></span>

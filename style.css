@@ -71,7 +71,15 @@ h2 { font-size: 18px; margin: 0 0 8px; }
 .new-list .nm { flex: 1; min-width: 0; }
 
 /* Dashboard */
-.dash-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.dash-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.dash-head h2 { margin: 0; }
+.dash-head .count { font-size: 14px; font-weight: 400; margin-left: 6px; }
+.sort { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.sort select {
+  background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 8px;
+  padding: 6px 8px; font: inherit; font-size: 14px; cursor: pointer;
+}
+.pick-tools { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
 .fav-list {
   display: grid; gap: 12px;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
