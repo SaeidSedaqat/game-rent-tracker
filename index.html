@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game Rent Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-in">
+      <h1>🎮 Game Rent Tracker</h1>
+      <div class="actions">
+        <button class="btn ghost dice-btn" id="btnDice" title="Random free game" aria-label="Random free game">🎲</button>
+        <button class="btn" id="btnAdd">+ Add games</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="banners"></div>
+
+    <!-- Favorites dashboard -->
+    <section id="dashboard" hidden>
+      <div class="dash-head">
+        <h2>My games</h2>
+        <span class="muted" id="favCount"></span>
+      </div>
+      <div id="favList" class="fav-list"></div>
+      <div class="card empty" id="favEmpty" hidden>
+        <h2>Welcome!</h2>
+        <p class="muted">Pick your favorite games and choose Z2 (PS4), Z2 (PS5) or Z3 for each one. We'll show you when they're free.</p>
+        <button class="btn big" id="btnEmptyAdd">Choose my games →</button>
+      </div>
+    </section>
+
+    <p id="loading" class="muted center">Loading the game list…</p>
+  </main>
+
+  <footer>
+    <span id="lastUpdated" class="muted"></span>
+    <button class="link" id="btnRefresh">Refresh</button>
+    <button class="link" id="btnNotify" hidden>Enable notifications</button>
+  </footer>
+
+  <!-- Game picker -->
+  <dialog id="diceDlg">
+    <div class="dlg small">
+      <div class="dlg-head">
+        <h2>🎲 Random free game</h2>
+        <button class="x" data-close aria-label="Close">✕</button>
+      </div>
+      <p class="muted dice-sub">Picked from your games that are free right now.</p>
+      <div id="diceResult" class="dice-result"></div>
+      <div class="dlg-foot">
+        <span></span>
+        <button class="btn" id="btnReroll">🎲 Roll again</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="picker">
+    <div class="dlg">
+      <div class="dlg-head">
+        <h2>Choose games</h2>
+        <button class="x" data-close aria-label="Close">✕</button>
+      </div>
+      <input type="search" id="search" placeholder="Search games…" autocomplete="off">
+      <div class="chips" id="levelChips"></div>
+      <div class="pick-list" id="pickList"></div>
+      <div class="dlg-foot">
+        <span class="muted" id="pickCount"></span>
+        <button class="btn" id="btnPickDone">Done</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
