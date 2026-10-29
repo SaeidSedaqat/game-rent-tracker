@@ -318,6 +318,7 @@ function compareGames(mode, a, b, keysA, keysB) {
     case 'rentAsc': return (a.rentDays || 999) - (b.rentDays || 999) || byName;
     case 'rentDesc': return (b.rentDays || 0) - (a.rentDays || 0) || byName;
     case 'level': return levelNum(a) - levelNum(b) || byName;
+    case 'newest': return games.indexOf(b) - games.indexOf(a); // the sheet lists games oldest to newest
     default: return 0;
   }
 }
