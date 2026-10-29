@@ -81,6 +81,7 @@ async function fetchImageLinks() {
       const tds = tr.querySelectorAll('td');
       const img = tds[0] && tds[0].querySelector('img');
       if (!img || !tds[1]) continue;
+      tds[1].querySelectorAll('br').forEach(br => br.replaceWith(' ')); // multi-line names
       const name = tds[1].textContent.replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
       if (name && !map[name]) map[name] = img.getAttribute('src');
     }
